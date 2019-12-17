@@ -60,7 +60,7 @@ namespace finalEstructura
                         break;
                 }
                 Thread.Sleep(2000);
-                menuPrincipal();//Se utiliza recursividad excepto "case 9"
+                menuPrincipal();//Se utiliza recursividad excepto "case 0"
             }
 
             void crearCola()
@@ -71,26 +71,32 @@ namespace finalEstructura
 
             void borrarCola()
             {
-                pedidos.Clear();
-                Console.WriteLine("\nCola vaciada!!!\n");
+                pedidos = null;
+                Console.WriteLine("\nCola inutilizada!!!\n");
             }
 
             void agregarPedido()
             {
                 Console.WriteLine("\nIngrese su pedido: ");
                 int pedido = Convert.ToInt32(Console.ReadLine());
-
-                if (pedido > 0 && pedido < 999)//Validación de valores ingresados por el usuario.
-                {
-                    pedidos.Enqueue(pedido);//Se carga la cola con pedidos.
-                    Console.Write("\nPedido ingresado!!!\n");
+                
+                if (pedidos != null)
+                { 
+                    if (pedido > 0 && pedido < 999)//Validación de valores ingresados por el usuario.
+                    {
+                        pedidos.Enqueue(pedido);//Se carga la cola con pedidos.
+                        Console.Write("\nPedido ingresado!!!\n");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nPedido ingresado incorrectamente. Pruebe de nuevo...\n");
+                        agregarPedido(); //Se utiliza recursividad para volver a pedir el ingreso en caso de error de valores de entrada. 
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("\nPedido ingresado incorrectamente. Pruebe de nuevo...\n");
-                    agregarPedido(); //Se utiliza recursividad para volver a pedir el ingreso en caso de error de valores de entrada. 
+                    Console.WriteLine("\nCola inexistente!!!");
                 }
-               
             }
 
             void borrarPedido()
@@ -98,59 +104,98 @@ namespace finalEstructura
                 Queue<int> colaAux = new Queue<int>();//Se inicializa cola auxiliar para pasar valores con la cola de instancia.
                 int valorAux = 0;//Variable auxiliar.
 
-                Console.WriteLine("\n¿Qué pedido desea borrar?");
-                int pedido = Convert.ToInt32(Console.ReadLine());
-
-                while (pedidos.Count() > 0)//Comenzamos pasando los valores de la cola de instancia a la cola auxiliar.
+                if (pedidos != null)
                 {
-                    valorAux = pedidos.Dequeue();//Cargamos la variable con los elementos de la cola de instancia.
+                    Console.WriteLine("\n¿Qué pedido desea borrar?");
+                    int pedido = Convert.ToInt32(Console.ReadLine());
 
-                    if (valorAux != pedido)//Cargamos todos los valores expecto el valor de la variable "pedido", asi no incluimos el valor que el usuario desea eliminar.
+                    while (pedidos.Count() > 0)//Comenzamos pasando los valores de la cola de instancia a la cola auxiliar.
                     {
-                        colaAux.Enqueue(valorAux);//Cargamos la cola auxiliar con el elemento de "valorAux".
+                        valorAux = pedidos.Dequeue();//Cargamos la variable con los elementos de la cola de instancia.
+
+                        if (valorAux != pedido)//Cargamos todos los valores expecto el valor de la variable "pedido", asi no incluimos el valor que el usuario desea eliminar.
+                        {
+                            colaAux.Enqueue(valorAux);//Cargamos la cola auxiliar con el elemento de "valorAux".
+                        }
                     }
+                    while (colaAux.Count() > 0)
+                    {
+                        pedidos.Enqueue(colaAux.Dequeue());//Finalmente llenamos la cola de instancia con todos los valores expecto el elemento eliminado.
+                    }
+                    Console.WriteLine("\nPedido eliminado!!!");
                 }
-                while (colaAux.Count() > 0)
+                else
                 {
-                    pedidos.Enqueue(colaAux.Dequeue());//Finalmente llenamos la cola de instancia con todos los valores expecto el elemento eliminado.
+                    Console.WriteLine("\nCola inexistente!!!");
                 }
-                Console.WriteLine("\nPedido eliminado!!!");
             }
 
             void todosPedidos()
             {
-                int indicador = 1;
-
-                foreach (int num in pedidos)//Recorremos la cola
+                if (pedidos != null)
                 {
-                    Console.WriteLine(indicador + "-" + num);//Imprimimos por pantalla la lista de pedidos con el formato indicado.
-                    indicador += 1;
+                    int indicador = 1;
+
+                    foreach (int num in pedidos)//Recorremos la cola
+                    {
+                        Console.WriteLine(indicador + "-" + num);//Imprimimos por pantalla la lista de pedidos con el formato indicado.
+                        indicador += 1;
+                    }
                 }
+                else
+                {
+                    Console.WriteLine("\nCola inexistente!!!");
+                }
+
+               
             }
 
             void ultimoPedido()
             {
-                int cantidad = pedidos.Count();
-                int cont = 0;
-
-                foreach (int num in pedidos)//Recorremos la cola
+                if (pedidos != null)
                 {
-                    cont += 1;
-                    if (cont==cantidad)//Entramos al if cuando llegamos al último elemento de la cola.
+                    int cantidad = pedidos.Count();
+                    int cont = 0;
+
+                    foreach (int num in pedidos)//Recorremos la cola
                     {
-                        Console.WriteLine("\nEl último pedido es: " + num);//Imprimimos por pantalla el último elemento.
+                        cont += 1;
+                        if (cont == cantidad)//Entramos al if cuando llegamos al último elemento de la cola.
+                        {
+                            Console.WriteLine("\nEl último pedido es: " + num);//Imprimimos por pantalla el último elemento.
+                        }
                     }
+                }
+                else
+                {
+                    Console.WriteLine("\nCola inexistente!!!");
                 }
             }
 
             void primerPedido()
             {
-                Console.WriteLine("\nEl primer pedido es: " + pedidos.Peek() + "\n");//Método Peek nos muestra el primer elemento de la cola sin eliminarlo.
+                if (pedidos != null)
+                {
+                    Console.WriteLine("\nEl primer pedido es: " + pedidos.Peek() + "\n");//Método Peek nos muestra el primer elemento de la cola sin eliminarlo.
+                }
+                else
+                {
+                    Console.WriteLine("\nCola inexistente!!!");
+                }
+
+                
             }
 
             void cantidadPedidos()
             {
-                Console.WriteLine("\nLa cantidad de pedidos es: " + pedidos.Count());//Método Count da la cantidad de elementos.
+                if (pedidos != null)
+                {
+                    Console.WriteLine("\nLa cantidad de pedidos es: " + pedidos.Count());//Método Count da la cantidad de elementos.
+                }
+                else
+                {
+                    Console.WriteLine("\nCola inexistente!!!");
+                }
             }
 
             void Salir()
@@ -164,31 +209,43 @@ namespace finalEstructura
 
             void mayorPedido()
             {
-                int mayor = 0;
-
-                foreach (int num in pedidos)
+                if (pedidos != null)
                 {
-                    if (num > mayor)//Si el valor en la cola es mayor a la variable de referencia. La asignamos como mayor.
+                    int mayor = 0;
+
+                    foreach (int num in pedidos)
                     {
-                        mayor = num;
+                        if (num > mayor)//Si el valor en la cola es mayor a la variable de referencia. La asignamos como mayor.
+                        {
+                            mayor = num;
+                        }
                     }
+                    Console.WriteLine("\nEl mayor pedido fue de: " + mayor);
                 }
-                Console.WriteLine("\nEl mayor pedido fue de: " + mayor);
+                else
+                {
+                    Console.WriteLine("\nCola inexistente!!!");
+                }
             }
 
             void sumaPedidos()
             {
-                int suma = 0;
-                foreach (int num in pedidos)//Recorremos la cola y sumamos los elementos.
+                if (pedidos != null)
                 {
-                    suma += num;
+                    int suma = 0;
+                    foreach (int num in pedidos)//Recorremos la cola y sumamos los elementos.
+                    {
+                        suma += num;
+                    }
+                    Console.WriteLine("\nLa suma de los pedidos es: " + suma);
                 }
-                Console.WriteLine("\nLa suma de los pedidos es: " + suma);
+                else
+                {
+                    Console.WriteLine("\nCola inexistente!!!");
+                }
             }
 
             menuPrincipal();
         }
     }
 }
-
-
